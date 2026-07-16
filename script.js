@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', forcePlayVideo, { once: true });
     document.addEventListener('touchstart', forcePlayVideo, { once: true });
 
-
     // === Музыкальный плеер ===
     const audio = document.getElementById('audio-track');
     const playBtn = document.getElementById('play-pause-btn');
@@ -63,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
         currentTimeEl.innerText = '0:00';
     });
 
-
     // === Таймер обратного отсчета (до 28.08.2026 17:30) ===
     const targetDate = new Date(2026, 7, 28, 17, 30, 0).getTime();
 
@@ -92,35 +90,37 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTimer();
     const timerInterval = setInterval(updateTimer, 1000);
 
-
-    // === Обработка формы анкеты с отправкой в Telegram ===
+    // === Обработка формы анкеты с отправкой через Google-мост ===
     const form = document.getElementById('wedding-form');
     
-    const TELEGRAM_TOKEN = '8839239178:AAFBEQGbsVE5iPnx8scalx3kiVc0tI6hfbc';
+    // Ссылка на ваше веб-приложение в Google Script
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzqkVLcnUptjkTYISmJlacySRjUkm715o3QUr4aQ4uPIBkr238fypfCjp0D1CHMam5L/exec';
+    
+    // ID получателей в Telegram
     const CHAT_IDS = ['6361410725', '1801013206'];
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const formData = new FormData(form);
+        const formData = new
+
+
+ta(form);
         const name = formData.get('name');
         const attendance = formData.get('attendance') === 'yes' ? 'Да, с удовольствием! ✅' : 'К сожалению, не смогу. ❌';
 
         const message = `🔔 *Новый ответ на приглашение!*\n\n👤 *Имя:* ${name}\n❓ *Присутствие:* ${attendance}`;
 
         const sendToTelegram = (chatId) => {
-            // Использован защищенный протокол HTTPS вместо HTTP
-            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
-            
-            return fetch(url, {
+            return fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
+                mode: 'no-cors', // Позволяет отправлять запросы без конфликтов безопасности
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     chat_id: chatId,
-                    text: message,
-                    parse_mode: 'Markdown'
+                    text: message
                 })
             });
         };
@@ -129,13 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (submitBtn) submitBtn.disabled = true;
 
         Promise.all(CHAT_IDS.map(id => sendToTelegram(id)))
-            .then(responses => {
-                if (responses.some(res => res.ok)) {
-                    alert(`Спасибо, ${name}! Ответ успешно отправлен.`);
-                    form.reset();
-                } else {
-                    alert('Произошла ошибка. Убедитесь, что вы запустили бота в Telegram (нажали СТАРТ).');
-                }
+            .then(() => {
+                alert(`Спасибо, ${name}! Ответ успешно отправлен.`);
+                form.reset();
             })
             .catch(err => {
                 console.error('Ошибка:', err);
@@ -145,4 +141,4 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (submitBtn) submitBtn.disabled = false;
             });
     });
-});
+}); FormDa
