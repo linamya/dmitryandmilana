@@ -6,10 +6,8 @@
     padding: 0;
 }
 
-html, body, #app, .v-page, .v-theme, [class*="theme"], [class*="page"], [class*="layout"], #pathway, .t-page, .jt-container, .jt-page {
-    background: transparent !important;
-    background-color: transparent !important;
-    background-image: none !important;
+html, body {
+    background-color: #000000 !important; /* Меняем transparent на черный, чтобы при скролле не было белых дыр */
     font-family: 'Cormorant Garamond', serif;
     overflow-x: hidden;
     -webkit-text-size-adjust: 100%;
@@ -21,7 +19,7 @@ html, body, #app, .v-page, .v-theme, [class*="theme"], [class*="page"], [class*=
     top: 0 !important;
     left: 0 !important;
     width: 100vw !important;
-    height: 100vh !important;
+    height: 100dvh !important; /* Исправлено с 100vh на 100dvh для мобильных браузеров */
     z-index: 0 !important; 
     overflow: hidden !important;
     pointer-events: none !important; 
