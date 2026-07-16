@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // === Обработка формы анкеты с отправкой в Telegram ===
     const form = document.getElementById('wedding-form');
     
-    // Токен и ID получателей
     const TELEGRAM_TOKEN = '8839239178:AAFBEQGbsVE5iPnx8scalx3kiVc0tI6hfbc';
     const CHAT_IDS = ['6361410725', '1801013206'];
 
@@ -107,11 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = formData.get('name');
         const attendance = formData.get('attendance') === 'yes' ? 'Да, с удовольствием! ✅' : 'К сожалению, не смогу. ❌';
 
-        // Формируем красивый текст для Telegram
         const message = `🔔 *Новый ответ на приглашение!*\n\n👤 *Имя:* ${name}\n❓ *Присутствие:* ${attendance}`;
 
-        // Функция отправки запроса к API Telegram
         const sendToTelegram = (chatId) => {
+            // Использован защищенный протокол HTTPS вместо HTTP
             const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
             
             return fetch(url, {
@@ -127,19 +125,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         };
 
-        // Блокируем кнопку, чтобы избежать повторных кликов при отправке
         const submitBtn = form.querySelector('.submit-btn');
         if (submitBtn) submitBtn.disabled = true;
 
-        // Отправляем сообщения на оба ID параллельно
         Promise.all(CHAT_IDS.map(id => sendToTelegram(id)))
             .then(responses => {
-                // Если хотя бы одно сообщение ушло успешно
                 if (responses.some(res => res.ok)) {
                     alert(`Спасибо, ${name}! Ответ успешно отправлен.`);
                     form.reset();
                 } else {
-                    alert('Произошла ошибка при отправке формы. Пожалуйста, убедитесь, что вы запустили бота в Telegram.');
+                    alert('Произошла ошибка. Убедитесь, что вы запустили бота в Telegram (нажали СТАРТ).');
                 }
             })
             .catch(err => {
@@ -147,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Ошибка соединения. Проверьте интернет-подключение.');
             })
             .finally(() => {
-                // Возвращаем кнопку в активное состояние
                 if (submitBtn) submitBtn.disabled = false;
             });
     });
